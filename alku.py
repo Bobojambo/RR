@@ -28,22 +28,23 @@ def train_model(model):
     return model
 
 
-def predict_image(model, image=None):
+def predict_image(model, image):
     
-    width = 224
-    height = 224
-    im = Image.open("1765120.jpg")
-    im = im.resize((width, height), Image.BILINEAR)
-    im.show()
-    im = np.array(im)
-    im_dumb = im[np.newaxis, ...]
-   
-    predictions = model.predict(im_dumb)
+    image = resize_image(image)   
+    predictions = model.predict(image)
     # convert the probabilities to class labels
     # We will get top 5 predictions which is the default
-    max_predictions_list = decode_predictions(predictions, top=1)[0]
-    
+    max_predictions_list = decode_predictions(predictions, top=1)[0]    
     return max_predictions_list
+
+def resize_image(image):
+    
+    #Get width and height from model
+    width, height = 224
+    image = image.resize((width, height), Image.BILINEAR)
+    numpy_image = np.array(image)
+    numpy_image = numpy_image[np.newaxis, ...]
+    return numpy_image
 
 def add_mask(image, color):
     
@@ -84,10 +85,9 @@ def split_image_to_grid(image, gridsize = 2):
             width_tracker += 1
             if width_tracker == gridsize:
                 break
-        
-    grid_of_images = []
-    
-    return grid_of_images
+       
+    return
+
 
 def merge_image(grid_of_images):
     #merge parts of image together
@@ -101,12 +101,12 @@ if __name__ == "__main__":
     image = cv.imread("1765120.jpg")
     masked_image = add_mask(image, color = "Red")
     
-    image_tiles = split_image_to_grid(image, 3)
+    split_image_to_grid(image, 3)
     
     #stacked_image = np.concatenate((masked_image, masked_image), axis=1)
     #cv.imwrite('out.png', stacked_image)
     
-    #image_part = cv_image1[0:600, 0:800]
+    
     
     #merge = np.array(image)
     #mergePIL = Image.fromarray(merge)

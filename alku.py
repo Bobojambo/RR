@@ -66,11 +66,25 @@ def add_mask(image, color):
 def split_image_to_grid(image, gridsize = 2):
     
     height, width, channels = image.shape
-    grid_height = height/gridsize
-    grid_width = width/gridsize
+    image_height = int(height/gridsize)
+    image_width = int(width/gridsize)
     
+    height_tracker = 0
+    width_tracker = 0
     
-    
+    while True:
+        
+        cropped_image = image[height_tracker*image_height : height_tracker*image_height+image_height,
+                              width_tracker*image_width : width_tracker*image_width+image_width]
+        image_name = "{}{}.jpg".format(height_tracker, width_tracker)
+        cv.imwrite(image_name, cropped_image)
+        height_tracker += 1
+        if height_tracker == gridsize:
+            height_tracker = 0
+            width_tracker += 1
+            if width_tracker == gridsize:
+                break
+        
     grid_of_images = []
     
     return grid_of_images
@@ -87,8 +101,10 @@ if __name__ == "__main__":
     image = cv.imread("1765120.jpg")
     masked_image = add_mask(image, color = "Red")
     
-    stacked_image = np.concatenate((image, image), axis=1)
-    cv.imwrite('out.png', stacked_image)
+    image_tiles = split_image_to_grid(image, 3)
+    
+    #stacked_image = np.concatenate((masked_image, masked_image), axis=1)
+    #cv.imwrite('out.png', stacked_image)
     
     #image_part = cv_image1[0:600, 0:800]
     

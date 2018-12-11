@@ -9,7 +9,6 @@ from keras.applications.resnet50 import ResNet50
 from keras import Sequential
 import cv2 as cv
 import numpy as np
-from PIL import Image
 from keras.applications.imagenet_utils import decode_predictions
 
 
@@ -22,11 +21,6 @@ def generate_model(number_of_classes=2):
     #model.add(Dense(number_of_classes, activation='softmax'))
     
     return model
-
-def train_model(model):
-    
-    return model
-
 
 def predict_image(image):
     
@@ -50,24 +44,6 @@ def resize_image(image):
   
 #Add mask to an image. If prediction is True, add green, else, red
 def add_mask(image, prediction):
-    
-    mask = np.zeros_like(image)
-    height, width, channels = image.shape
-    if prediction is True:
-        mask[0:0, 0:0] = [1, 0, 0]  # Red block
-        mask[0:height, 0:width] = [0, 255, 0] # Green block
-        mask[0:0, 0:0] = [0, 0, 1] # Blue block
-    
-    else:
-        mask[0:height, 0:width] = [1, 255, 0]  # Red block
-        mask[0:0, 0:0] = [0, 1, 0] # Green block
-        mask[0:0, 0:0] = [0, 0, 1] # Blue block
-  
-    image = cv.addWeighted(image,0.7,mask,0.3,0)
-    
-    return image
-
-def add_mask_to_full_image(image, prediction):
     
     mask = np.zeros_like(image)
     height, width, channels = image.shape
@@ -114,10 +90,12 @@ def split_image_to_grid(image, gridsize = 2):
                  width_tracker*image_width : width_tracker*image_width+image_width] = [0,255,0]
             masked_full_image = cv.addWeighted(image,0.7,mask,0.3,0)
         
+        
+        """
         #Save crops to folder        
         image_name = "{}{}.jpg".format(height_tracker, width_tracker)
         cv.imwrite(image_name, masked_full_image)
-        
+        """
 
         
         #Next part of the image        

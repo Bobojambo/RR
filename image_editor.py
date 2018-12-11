@@ -10,19 +10,7 @@ from keras import Sequential
 import cv2 as cv
 import numpy as np
 import random
-from keras.applications.imagenet_utils import decode_predictions
 
-
-
-def generate_model(number_of_classes=2):
-    
-    model = Sequential()
-    resNet50base = ResNet50(include_top=True, weights='imagenet', input_tensor=None, input_shape=None, pooling=None, classes=1000)
-    model.add(resNet50base)
-    #model.add(Flatten())
-    #model.add(Dense(number_of_classes, activation='softmax'))
-    
-    return model
 
 def predict_image(image):
     
@@ -98,16 +86,14 @@ def split_image_to_grid(image, gridsize = 2):
               
     masked_full_image = cv.addWeighted(image,0.7,mask,0.3,0)
     
+    """
+    #For testing
     #Save crops to folder        
     image_name = "{}{}.jpg".format(height_tracker, width_tracker)
     cv.imwrite(image_name, masked_full_image)
-    
+    """
     return masked_full_image
 
-
-def merge_image(grid_of_images):
-    #merge parts of image together
-    return image
 
 if __name__ == "__main__":
     #print("do nothing")
@@ -115,19 +101,9 @@ if __name__ == "__main__":
     model = generate_model(number_of_classes)
         
     image = cv.imread("1765120.jpg")
-    #masked_image = add_mask(image, color = "Red")
     
     image = split_image_to_grid(image, 3)
-    
-    #stacked_image = np.concatenate((masked_image, masked_image), axis=1)
-    #cv.imwrite('out.png', stacked_image)
-    
-    
-    
-    #merge = np.array(image)
-    #mergePIL = Image.fromarray(merge)
-    #mergePIL.show()
-  
+
     
 
 

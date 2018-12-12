@@ -5,8 +5,6 @@ Created on Tue Nov 20 14:18:43 2018
 @author: TaitavaBobo§
 """
 
-from keras.applications.resnet50 import ResNet50
-from keras import Sequential
 import cv2 as cv
 import numpy as np
 import random
@@ -15,19 +13,12 @@ import random
 def predict_image(image):
     
     image = resize_image(image)   
-    #predictions = model.predict(image)
-    # convert the probabilities to class labels
-    # We will get top 5 predictions which is the default
-    """
-    max_predictions_list = decode_predictions(predictions, top=1)[0]
-    """
     
     roll = random.randint(1,100)
     if roll < 50:
-        prediction = True
+        return True
     else:
-        prediction = False
-    return prediction
+        return False
 
 def resize_image(image):
     
@@ -96,12 +87,8 @@ def split_image_to_grid(image, gridsize = 2):
 
 
 if __name__ == "__main__":
-    #print("do nothing")
-    number_of_classes = 2
-    model = generate_model(number_of_classes)
-        
-    image = cv.imread("1765120.jpg")
-    
+    #print("do nothing")        
+    image = cv.imread("1765120.jpg")    
     image = split_image_to_grid(image, 3)
 
     

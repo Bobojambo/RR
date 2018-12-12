@@ -7,7 +7,6 @@ Created on Tue Dec 11 13:17:19 2018
 
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import image_editor
 
 #CV2 BGR, not RGB

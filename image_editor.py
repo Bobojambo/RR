@@ -54,18 +54,30 @@ def split_image_to_grid(image, gridsize = 2):
         prediction = predict_image(cropped_image)
         #cropped_image = add_mask(cropped_image, prediction)
         
+        #Text to image
+        font = cv.FONT_HERSHEY_SIMPLEX
+        cv.putText(mask,'edit',(10,500), font, 4,(255,255,255),2,cv.LINE_AA)
+        
+        #Rectangle
         if prediction is True:
-            #mask[0:0, 0:0] = [1, 0, 0]  # Red block
+            cv.rectangle(mask,(width_tracker*image_width, height_tracker*image_height),
+                         (width_tracker*image_width+image_width-5, height_tracker*image_height+image_height-5),
+                         (0,255,0)
+                         ,3)
+        else:
+            cv.rectangle(mask,(width_tracker*image_width, height_tracker*image_height),
+             (width_tracker*image_width+image_width-5, height_tracker*image_height+image_height-5),
+             (0,0,255)
+             ,3)
+        """
+        if prediction is True:
             mask[height_tracker*image_height : height_tracker*image_height+image_height,
                  width_tracker*image_width : width_tracker*image_width+image_width] = [0, 255, 0] # Green block
-            #mask[0:0, 0:0] = [0, 0, 1] # Blue block
             
         else:
             mask[height_tracker*image_height : height_tracker*image_height+image_height,
                  width_tracker*image_width : width_tracker*image_width+image_width] = [0, 0, 255]  # Red block
-            #mask[0:0, 0:0] = [0, 1, 0] # Green block
-            #mask[0:0, 0:0] = [0, 0, 1] # Blue block
-                
+        """       
                    
         #Tracker increase in order to handle full image
         height_tracker += 1
@@ -75,14 +87,14 @@ def split_image_to_grid(image, gridsize = 2):
             if width_tracker == gridsize:
                 break
               
-    masked_full_image = cv.addWeighted(image,0.7,mask,0.3,0)
+    masked_full_image = cv.addWeighted(image,0.75,mask,0.25,0)
     
-    """
+    
     #For testing
     #Save crops to folder        
     image_name = "{}{}.jpg".format(height_tracker, width_tracker)
     cv.imwrite(image_name, masked_full_image)
-    """
+    
     return masked_full_image
 
 

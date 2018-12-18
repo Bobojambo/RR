@@ -46,8 +46,11 @@ def read_and_write_a_video():
         # Display the resulting frame
         cv2.imshow('Frame',frame)
         
-        #Edit the frame according to 
-        frame = image_editor.split_image_to_grid(frame)
+        #Edit the frame according to
+        
+        #GRIDSIZE
+        gridsize = 3
+        frame = image_editor.split_image_to_grid(frame, gridsize)
         
         # write the flipped frame
         out.write(frame)        

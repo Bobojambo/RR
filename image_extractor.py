@@ -65,7 +65,10 @@ def extract_images(semantic_image_path, color_image_path, index, gridsize):
         
     return index
 
-
+"""
+#Checks every pixel in the image if it is the color of the water
+#The algorithm could be speed up with numpy arrays
+"""
 def check_if_semantic_image_is_water(image):
     
     #water_pixel_color = get_water_semantic_color()
@@ -73,25 +76,36 @@ def check_if_semantic_image_is_water(image):
     
     water_pixel_color = "132154147"
     
+    #height and width of image
     h = image.shape[0]
     w = image.shape[1]
     
     prediction = True
+    #Go through every pixel of the image
     for y in range(0,h):
         for x in range (0,w):
-
+            
+            #change the pixel value to string
             image_pixel_color = str(image[y,x][0])+str(image[y,x][1])+str(image[y,x][2])
+            
+            """
+            debug
             #print("y: ",y, " x: ", x)
             #print("image pixel: ", image_pixel_color)
             #print("water pixel: ", water_pixel_color)
+            """
             
+            #Return if faulty pixel is found
             if image_pixel_color != water_pixel_color:
                 print("not matching pixel")
                 prediction = False
                 return prediction
         
     return prediction
-        
+
+"""
+function for retriving the water pixel color #DOES NOT WORK#
+"""
 def get_water_semantic_color():
     
     image = cv.imread("water_color.jpg")
@@ -129,9 +143,6 @@ def main():
     gridsize = 3
     for semantic_image, color_image in zip(GT_image_paths, HD_image_paths):
         index = extract_images(semantic_image, color_image, index, gridsize)
-        
-        if index > 10:
-            break
         
     return
 

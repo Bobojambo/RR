@@ -7,28 +7,26 @@ Created on Tue Nov 20 14:18:43 2018
 
 import cv2 as cv
 import numpy as np
-import random
+import classification_model
 
 
-def predict_image(image):
+"""
+Function for image resizing. Function needs to be modified in order to use
+different resize methods
+"""
+def resize_image(image, resize_resolution = (224,224)):
     
-    image = resize_image(image)   
-    
-    roll = random.randint(1,100)
-    if roll < 50:
-        return True
-    else:
-        return False
-
-def resize_image(image):
-    
-    resized_image = cv.resize(image, (224,224), interpolation = cv.INTER_LINEAR)
+    resized_image = cv.resize(image, resize_resolution, interpolation = cv.INTER_LINEAR)
     numpy_image = np.array(resized_image)
     numpy_image = numpy_image[np.newaxis, ...]
     
     return numpy_image
 
-def split_image_to_grid(image, gridsize = 2):
+"""
+Function to split frames of a video into gridframes with desired gridsize.
+E.g. gridsize = 2 generates 2x2 grid with 4 different subimages
+"""
+def split_and_predict_grid_images(model, image, gridsize = 4):
     
     #Get image shape
     height, width, channels = image.shape
@@ -49,14 +47,11 @@ def split_image_to_grid(image, gridsize = 2):
         cropped_image = image[height_tracker*image_height : height_tracker*image_height+image_height,
                               width_tracker*image_width : width_tracker*image_width+image_width]
                 
-        #Classify image for water or not
-        #Add mask to the part of the image
-        prediction = predict_image(cropped_image)
-        #cropped_image = add_mask(cropped_image, prediction)
-        
-        #Text to image
-        font = cv.FONT_HERSHEY_SIMPLEX
-        cv.putText(mask,'edit',(10,500), font, 4,(255,255,255),2,cv.LINE_AA)
+        #Boolean prediction, resize image to (224,224) to match ResNet50 input
+        prediction = model.predict(resize_image(cropped_image))
+        #0 = water, 1 = other
+        if prediction[0][0] > 0.5:
+            prediction = True
         
         #Rectangle
         if prediction is True:
@@ -68,16 +63,7 @@ def split_image_to_grid(image, gridsize = 2):
             cv.rectangle(mask,(width_tracker*image_width, height_tracker*image_height),
              (width_tracker*image_width+image_width-5, height_tracker*image_height+image_height-5),
              (0,0,255)
-             ,3)
-        """
-        if prediction is True:
-            mask[height_tracker*image_height : height_tracker*image_height+image_height,
-                 width_tracker*image_width : width_tracker*image_width+image_width] = [0, 255, 0] # Green block
-            
-        else:
-            mask[height_tracker*image_height : height_tracker*image_height+image_height,
-                 width_tracker*image_width : width_tracker*image_width+image_width] = [0, 0, 255]  # Red block
-        """       
+             ,3)  
                    
         #Tracker increase in order to handle full image
         height_tracker += 1
@@ -87,21 +73,23 @@ def split_image_to_grid(image, gridsize = 2):
             if width_tracker == gridsize:
                 break
               
-    masked_full_image = cv.addWeighted(image,0.75,mask,0.25,0)
+    masked_full_image = cv.addWeighted(image,0.85,mask,0.15,0)
     
-    
+    """
     #For testing
-    #Save crops to folder        
+    #Save crops to folder  
     image_name = "{}{}.jpg".format(height_tracker, width_tracker)
     cv.imwrite(image_name, masked_full_image)
-    
     return masked_full_image
-
+    """
 
 if __name__ == "__main__":
     #print("do nothing")        
-    image = cv.imread("1765120.jpg")    
-    image = split_image_to_grid(image, 3)
+    image = cv.imread("1765120.jpg")
+    model = classification_model.generate_model((224,224,3))
+    model.load_weights("weights.best.hdf5")
+    image = split_and_predict_grid_images(model, image, 4)
+    predictions = model.predict(resize_image(image))
 
     
 

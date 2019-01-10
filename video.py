@@ -8,12 +8,8 @@ Created on Tue Dec 11 13:17:19 2018
 import cv2
 import numpy as np
 import image_editor
-
-#CV2 BGR, not RGB
-
-def main():
-    read_and_write_a_video()
-    
+import classification_model
+   
 """
 SOURCE
 https://www.learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python/
@@ -36,7 +32,12 @@ def read_and_write_a_video():
      
     # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi',fourcc, 10, (frame_width,frame_height))    
+    out = cv2.VideoWriter('output.avi',fourcc, 10, (frame_width,frame_height))
+
+    # Load network to predict images
+    model = classification_model.generate_model((224,224,3))
+    model.load_weights("weights.best.hdf5")
+    
     # Read until video is completed
     while(capture.isOpened()):
       # Capture frame-by-frame
@@ -50,10 +51,10 @@ def read_and_write_a_video():
         
         #GRIDSIZE
         gridsize = 3
-        frame = image_editor.split_image_to_grid(frame, gridsize)
+        edited_frame = image_editor.split_and_predict_grid_images(model, frame, gridsize)
         
         # write the flipped frame
-        out.write(frame)        
+        out.write(edited_frame)        
         
         # Press Q on keyboard to  exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -71,6 +72,11 @@ def read_and_write_a_video():
     cv2.destroyAllWindows()
     
     return
+
+#CV2 BGR, not RGB
+
+def main():
+    read_and_write_a_video()
 
 if __name__ == "__main__":
     main()

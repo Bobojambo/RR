@@ -88,13 +88,6 @@ def check_if_semantic_image_is_water(image):
             #change the pixel value to string
             image_pixel_color = str(image[y,x][0])+str(image[y,x][1])+str(image[y,x][2])
             
-            """
-            debug
-            #print("y: ",y, " x: ", x)
-            #print("image pixel: ", image_pixel_color)
-            #print("water pixel: ", water_pixel_color)
-            """
-            
             #Return if faulty pixel is found
             if image_pixel_color != water_pixel_color:
                 print("not matching pixel")

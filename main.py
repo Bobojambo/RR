@@ -10,9 +10,9 @@ import classification_model
 import numpy as np
 import cv2
 
-def classify_video_frames(model, gridsize=3):
+def classify_video_frames(model, gridsize, output_filename, label_binarizer=None):
     
-    capture = cv2.VideoCapture('esimerkki.mp4')
+    capture = cv2.VideoCapture('Videos/patka2.mp4')
     
     # Check if camera opened successfully
     if (capture.isOpened()== False): 
@@ -24,8 +24,8 @@ def classify_video_frames(model, gridsize=3):
     frame_height = int(capture.get(4))
      
     # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi',fourcc, 10, (frame_width,frame_height))
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter(output_filename,fourcc, 10.0, (frame_width,frame_height))
     
     # Read until video is completed
     while(capture.isOpened()):
@@ -65,7 +65,8 @@ def main():
     
     try:
     
-        if input_str == "train":            
+        if input_str == "train":      
+            
             test = True
     
             #Water images
@@ -102,9 +103,22 @@ def main():
                 model.load_weights("weights.best.hdf5")
             except:
                 print("no weights found")
-    
-        classify_video_frames(model, gridsize=3)
-    
+        
+        while True:
+            input_str = str(input('Classify video? (y/n):'))       
+            
+            if input_str is 'y':
+                
+                output_filename = str(input('output filename: '))
+                gridsize = int(input('gridsize: '))
+                if output_filename is '':
+                    output_filename = 'output.avi'
+                    
+                classify_video_frames(model, gridsize, output_filename)
+            
+            else:
+                break
+            
     except:
         print("unexpected error")
     

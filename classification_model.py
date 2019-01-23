@@ -91,8 +91,8 @@ def load_image_paths(globPath, target, test_data = False):
         
     #For testing 500 first loaded images  
     if test_data == True:
-        filepaths = filepaths[:500]
-        targets = targets[:500]    
+        filepaths = filepaths[:5000]
+        targets = targets[:5000]    
       
     return filepaths, targets
 

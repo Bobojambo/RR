@@ -9,5 +9,7 @@ In this project, the purpose was to study neural networks for water image classi
 - Opencv is required for the project. For installing opencv for anaconda distribution, please check https://anaconda.org/conda-forge/opencv
 - For training the models, tensorflow is used. For installing tensorflow, please check https://www.tensorflow.org/install/pip
 
+# Data
+
 # Usage
 

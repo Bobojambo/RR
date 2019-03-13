@@ -9,7 +9,7 @@ and thus the images are checked in 9 different locations.
 """
 
 import glob
-import os, shutil
+import os
 import cv2 as cv
 
 
@@ -19,7 +19,7 @@ def extract_images(semantic_image_path, color_image_path, index, gridsize):
     color_image = cv.imread(color_image_path)
     height, width, channels = semantic_image.shape
 
-    #Single grid height and width for editing
+    # Single grid height and width for editing
     image_height = int(height/gridsize)
     image_width = int(width/gridsize)
 
@@ -31,15 +31,15 @@ def extract_images(semantic_image_path, color_image_path, index, gridsize):
     while True:
 
         # Crop part of the image for editing
-        semantic_cropped_image = semantic_image[height_tracker*image_height : height_tracker*image_height+image_height,
-                                                width_tracker*image_width : width_tracker*image_width+image_width]
+        semantic_cropped_image = semantic_image[height_tracker*image_height:height_tracker*image_height+image_height,
+                                                width_tracker*image_width:width_tracker*image_width+image_width]
 
         water_boolean = check_if_semantic_image_is_water(semantic_cropped_image)
 
         # Save corresponding part of color image
         if water_boolean is True:
-            color_cropped_image = color_image[height_tracker*image_height : height_tracker*image_height+image_height,
-                                              width_tracker*image_width : width_tracker*image_width+image_width]       
+            color_cropped_image = color_image[height_tracker*image_height:height_tracker*image_height+image_height,
+                                              width_tracker*image_width:width_tracker*image_width+image_width]       
             image_name = "water_images/{}.jpg".format(index)
             cv.imwrite(image_name, color_cropped_image)
             index += 1
@@ -81,26 +81,27 @@ def check_if_semantic_image_is_water(image):
     return prediction
 
 
+"""
 # function for retriving the water pixel color #DOES NOT WORK#
 def get_water_semantic_color():
 
     image = cv.imread("water_color.jpg")
-    #BGR values   
+    # BGR values   
     blue = image[250,250,0]
     green = image[250,250,1]
     red = image[250,250,2]
     water_pixel_color = [blue, green, red]
+
     #Is
     #Water color = [131, 154, 146]
     #Should be
     #132, 154, 147
-        
     return water_pixel_color
+"""
 
 
 def main():
-    
-    #delete old files
+
     folder = "water_images/"
     for the_file in os.listdir(folder):
         file_path = os.path.join(folder, the_file)
@@ -109,18 +110,19 @@ def main():
                 os.unlink(file_path)
         except Exception as e:
             print(e)
-    
-    #path for data
+
+    # path for data
     GT_image_paths = glob.glob("data/simulator_images/images/*GT.png")
     HD_image_paths = glob.glob("data/simulator_images/images/*HD.png")
-    
-    #Index for image naming
-    index = 0    
+
+    # Index for image naming
+    index = 0
     gridsize = 3
     for semantic_image, color_image in zip(GT_image_paths, HD_image_paths):
         index = extract_images(semantic_image, color_image, index, gridsize)
-        
+
     return
+
 
 if __name__ == "__main__":
     main()

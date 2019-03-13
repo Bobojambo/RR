@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ET
 import glob
 import sys
-#import class_extractor
 import os
 import shutil
 import csv
@@ -21,7 +20,7 @@ def create_fullImage_dict():
         first_split = filename.split('.')
         without_jpg_string = first_split[0]
         image_number_string = without_jpg_string.split('\\')[-1]
-        images_dict[image_number_string] = filename    
+        images_dict[image_number_string] = filename
 
     return images_dict
 
@@ -114,20 +113,20 @@ def get_sub_images(images_dict, resize_argument, test_images_argument):
                     # Extra pixels to deny black borders with the real reflected image
                     extra = 400
                     reflect_image = cv2.copyMakeBorder(img, extra, extra, extra, extra, cv2.BORDER_REFLECT_101)
-                    img_cropped = reflect_image[(ymin + extra):(ymax + extra), (xmin + extra):(xmax + extra)]    
+                    img_cropped = reflect_image[(ymin + extra):(ymax + extra), (xmin + extra):(xmax + extra)]
 
                     images.append(img_cropped)
                     classes.append(object_name)
 
                 else:
-                    # The box is a 4-tuple defining the left, upper, right, and lower pixel coordinate.                
+                    # The box is a 4-tuple defining the left, upper, right, and lower pixel coordinate.
                     # print("xmin: ", xmin, " ymin: ", ymin, " xmax: ", xmax, " ymax: ", ymax)
                     # print(xmin,ymax,xmax-xmin,ymax-ymin)
 
-                    img_cropped = img[ymin:ymax, xmin:xmax]                    
+                    img_cropped = img[ymin:ymax, xmin:xmax]
                     images.append(img_cropped)
                     classes.append(object_name)
-        
+
         image_index = resize_and_save_image_batch(images, image_index)
         images = []
 
@@ -157,7 +156,7 @@ def resize_and_save_image_batch(images, index, width=128, height=128, path="Resi
 
         resized_image = cv2.resize(image, ((224, 224)))
         cv2.imwrite("{}image{}.jpg".format("ResizedImages224x224/", index), resized_image)
-        
+
         index += 1
 
     return index
@@ -174,7 +173,7 @@ def create_classes_csv(classes):
         writer = csv.writer(output, lineterminator='\n')
         index = 0
         for line in classes:
-            writer.writerow([index, line])   
+            writer.writerow([index, line])
             index += 1
 
     return
@@ -182,7 +181,7 @@ def create_classes_csv(classes):
 
 if __name__ == "__main__":
 
-    input_var = input("Square subimage extraction (True/False): ")    
+    input_var = input("Square subimage extraction (True/False): ")
     argument = str(input_var)
     input_var = str(input("Test images run (Y/N): "))
     test_images_argument = input_var
@@ -191,7 +190,7 @@ if __name__ == "__main__":
         images_dict = create_fullImage_dict()
 
         print("Sub images")
-        images, classes = get_sub_images(images_dict, argument, test_images_argument)    
+        images, classes = get_sub_images(images_dict, argument, test_images_argument)
 
         # print("Parent list and dictionaries")
         # parent_list, dictionaries_list = class_extractor.return_class_dictionaries()

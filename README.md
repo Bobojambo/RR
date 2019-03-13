@@ -9,7 +9,7 @@ In this project, the purpose was to study neural networks for water image classi
 - Opencv is required for the project. For installing opencv for anaconda distribution, please check https://anaconda.org/conda-forge/opencv
 - For training the models, tensorflow is used. For installing tensorflow, please check https://www.tensorflow.org/install/pip
 
-# Data and Preprocess
+# Model Training Data
 
 - For training a model to classify simulator images of water and real images of different objects in maritime objects are used
 - Simulator images consist of HD and ground truth images in maritime environment
@@ -17,11 +17,14 @@ In this project, the purpose was to study neural networks for water image classi
 - Before training, place the data correspondingly 
   - 'data/simulator_images/'
   - 'data/real_images/'
-- Run 'real_image_extractor.py' and 'simulator_image_extractor.py' to acquire the dataset.
+- Run '__real_image_extractor.py__' and '__simulator_image_extractor.py__' to acquire the dataset used for training the model.
   - water class images will be extracted from the simulation images in 'water_images/' folder
   - other class images will be extracted in different sizes to 'ResizedImages/' folders
 
 # Usage
+
+- The purpose of the model and project is to test whether it is possible to classify real images of water based on training data which is acquired from simulation environment
+- The program is run using __main.py__
 
 - main.py
   - 

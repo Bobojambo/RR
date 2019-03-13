@@ -1,16 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan  9 14:48:17 2019
-
-@author: TaitavaBobo§
-"""
-
 import image_editor
 import classification_model
 import numpy as np
 import cv2
 
-def classify_video_frames(model, gridsize, output_filename, label_binarizer=None):
+def classify_video_frames(model, gridsize=3, output_filename='output.avi', label_binarizer=None):
     
     capture = cv2.VideoCapture('Videos/patka2.mp4')
     
@@ -37,7 +30,7 @@ def classify_video_frames(model, gridsize, output_filename, label_binarizer=None
         cv2.imshow('Frame',frame)
         
         #Edit the frame according to
-        edited_frame = image_editor.split_and_predict_grid_images(model, frame, gridsize)
+        edited_frame = image_editor.split_and_predict_grid_images(model, frame, gridsize, first_call=True)
         #edited_frame = frame
         # write the flipped frame
         out.write(edited_frame)        
@@ -59,15 +52,19 @@ def classify_video_frames(model, gridsize, output_filename, label_binarizer=None
     
     return
 
+
 def main():
-    input_str = str(input('Train or Load model:'))
-    print(input_str)
+
+    input_str = str(input('Test (y/n): '))
+    if input_str == "y":
+        test = True
+    else:
+        test = False
+    input_str = str(input('Train or Load model: '))
     
     try:
     
-        if input_str == "train":      
-            
-            test = True
+        if input_str == "Train":
     
             #Water images
             target = "water"
@@ -85,39 +82,51 @@ def main():
             images = water_images + other_images
             targets = water_targets + other_targets    
             images = np.array(images)
+
+            #binarize targets
+            label_binarizer = classification_model.binarize_targets(targets)
         
             #Generate model
             shape = images[0].shape    
-            model = classification_model.generate_model(shape)
-            
-            #binarize targets
-            label_binarizer = classification_model.binarize_targets(targets)
-            
+            model = classification_model.generate_model(shape)     
+
             #Train the model
-            history = classification_model.train_model(images, targets, model, label_binarizer)
+            weights_filepath = "weights.best.hdf5"
+            history = classification_model.train_model(images, targets, model, label_binarizer, weights_filepath)
             
-        elif input_str == "load":
+        elif input_str == "Load":
             
             model = classification_model.generate_model((224,224,3))
             try:
                 model.load_weights("weights.best.hdf5")
             except:
                 print("no weights found")
+
+        else:
+            print("Wrong input argument")
         
-        while True:
-            input_str = str(input('Classify video? (y/n):'))       
-            
-            if input_str is 'y':
+        if model is not None:
+            while True:
+                input_str = str(input('Classify video? (y/n):'))       
                 
-                output_filename = str(input('output filename: '))
-                gridsize = int(input('gridsize: '))
-                if output_filename is '':
-                    output_filename = 'output.avi'
+                if input_str is 'y':
                     
-                classify_video_frames(model, gridsize, output_filename)
-            
-            else:
-                break
+                    output_filename = str(input('output filename (.avi): '))
+                    output_filename = output_filename + ".avi"
+                    if output_filename is '':
+                        output_filename = 'output.avi'
+                        
+                    gridsize = input('gridsize: ')
+                    try:
+                        gridsize = int(gridsize)
+                    except:
+                        print("Cannot cast grid size, setting default 3")
+                        pass
+                    gridsize = 3
+                    classify_video_frames(model, gridsize, output_filename)
+                
+                else:
+                    break
             
     except:
         print("unexpected error")

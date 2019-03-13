@@ -1,15 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 12 13:18:11 2018
-
-@author: hakala24
-"""
-
-import numpy as np
-import glob
-import os, shutil
-import cv2 as cv
-
 """
 In this file, the semantic and color simulator images are handled. The script
 will go the images through one by one and checks if the semantic image contains
@@ -18,8 +6,13 @@ the semantic image segment.
 
 Gridsize can be used to specify the checked/saved images. By default gridsize = 3
 and thus the images are checked in 9 different locations.
-
 """
+
+import numpy as np
+import glob
+import os, shutil
+import cv2 as cv
+
 
 def extract_images(semantic_image_path, color_image_path, index, gridsize):
     

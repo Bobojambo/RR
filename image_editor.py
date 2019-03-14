@@ -16,7 +16,8 @@ def resize_image(image, resize_resolution=(224, 224)):
 # E.g. gridsize = 2 generates 2x2 grid with 4 different subimages
 def split_and_predict_grid_images(model, image, gridsize=2, first_call=False, testing=False, label_binarizer=None):
 
-    # Threshold used for image classification to water or other class
+    # Threshold used for image classification to water or other class.
+    # Can be varied in order to achieve different TPR and FPR rates.
     classification_threshold = 0.8
 
     # Get image shape
@@ -35,12 +36,11 @@ def split_and_predict_grid_images(model, image, gridsize=2, first_call=False, te
         cropped_image = image[height_tracker*image_height:height_tracker*image_height+image_height,
                               width_tracker*image_width:width_tracker*image_width+image_width]
 
+        # Smaller area testing
         if height_tracker == 1 and width_tracker == 1 and first_call is True:
             split_and_predict_grid_images(model, cropped_image, 5)
-
         if height_tracker == 2 and width_tracker == 1 and first_call is True:
             split_and_predict_grid_images(model, cropped_image, 5)
-
         if height_tracker == 0 and width_tracker == 1 and first_call is True:
             split_and_predict_grid_images(model, cropped_image, 5)
 
@@ -64,6 +64,7 @@ def split_and_predict_grid_images(model, image, gridsize=2, first_call=False, te
                          (width_tracker*image_width+image_width-1, height_tracker*image_height+image_height-1),
                          (0, 0, 255), 1)
 
+        # Under threshold
         else:
             cv.rectangle(image, (width_tracker*image_width, height_tracker*image_height),
                          (width_tracker*image_width+image_width-1, height_tracker*image_height+image_height-1),
@@ -77,8 +78,7 @@ def split_and_predict_grid_images(model, image, gridsize=2, first_call=False, te
             if width_tracker == gridsize:
                 break
 
-    # For testing
-    # Save crops to folder
+    # For testing, save crops to folder
     if testing is True:
         image_name = "testi.jpg".format(height_tracker, width_tracker)
         cv.imwrite(image_name, image)
@@ -93,23 +93,6 @@ if __name__ == "__main__":
     first_call = True
 
     model = classification_model.generate_model((224, 224, 3))
-    model.load_weights("weights.mobilenetAdam.hdf5")
-
-    # Water images
-    target = "water"
-    path = 'water_images/*.jpg'
-    waterimagepaths, water_targets = classification_model.load_image_paths(path, target)
-    water_images = classification_model.load_and_resize_images_from_paths(waterimagepaths)
-
-    # Other images
-    target = "other"
-    path = 'ResizedImages224x224/*.jpg'
-    other_images_paths, other_targets = classification_model.load_image_paths(path, target)
-    other_images = classification_model.load_and_resize_images_from_paths(other_images_paths)
-
-    # Join the images
-    images = water_images + other_images
-    targets = water_targets + other_targets
-    images = np.array(images)
+    model.load_weights("weights.best.hdf5")
 
     image = split_and_predict_grid_images(model, image, 3, first_call, testing)

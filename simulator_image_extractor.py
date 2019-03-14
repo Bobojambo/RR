@@ -81,25 +81,6 @@ def check_if_semantic_image_is_water(image):
     return prediction
 
 
-"""
-# function for retriving the water pixel color #DOES NOT WORK#
-def get_water_semantic_color():
-
-    image = cv.imread("water_color.jpg")
-    # BGR values   
-    blue = image[250,250,0]
-    green = image[250,250,1]
-    red = image[250,250,2]
-    water_pixel_color = [blue, green, red]
-
-    #Is
-    #Water color = [131, 154, 146]
-    #Should be
-    #132, 154, 147
-    return water_pixel_color
-"""
-
-
 def main():
 
     folder = "water_images/"

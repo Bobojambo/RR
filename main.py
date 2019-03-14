@@ -8,7 +8,7 @@ import glob
 def classify_video_frames(model, gridsize=3, output_filename='output.avi', label_binarizer=None):
 
     # Atleast .mp4 video files work
-    filename = input('Enter video file to edit: ')
+    filename = input('Enter video file name to edit: ')
     capture = cv2.VideoCapture(filename)
 
     # Check if camera opened successfully

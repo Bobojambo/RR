@@ -34,19 +34,6 @@ def generate_model(shape, number_of_classes=2):
     return model
 
 
-def load_and_resize_images_from_paths(filepaths):
-
-    images = []	
-    for imagepath in filepaths:	
-        img = cv2.imread(imagepath)	
-        if img.shape[0] != 224:
-            img = cv2.resize(img, (224,224))	
-            img = np.array(img)	
-        images.append(img)	
-
-    return images
-
-
 def train_model(images, targets, model, lb, filepath="weights.best.hdf5"):
 
     labels_binarized = lb.transform(targets)
@@ -86,26 +73,6 @@ def binarize_targets(targets):
     np.save('classes.npy', lb.classes_)
 
     return lb
-
-
-def load_image_paths(globPath, target, test_data=False):
-
-    image_files = []
-    for filename in glob.glob(globPath):
-        image_files.append(filename)
-
-    filepaths = []
-    targets = []
-    for file in image_files:
-        filepaths.append(file)
-        targets.append(target)
-
-    # For testing 500 first loaded images
-    if test_data is True:
-        filepaths = filepaths[:500]
-        targets = targets[:500]
-
-    return filepaths, targets
 
 
 if __name__ == "__main__":

@@ -2,11 +2,14 @@ import image_editor
 import classification_model
 import numpy as np
 import cv2
+import glob
 
 
 def classify_video_frames(model, gridsize=3, output_filename='output.avi', label_binarizer=None):
 
-    capture = cv2.VideoCapture('Videos/patka2.mp4')
+    # Atleast .mp4 video files work
+    filename = input('Enter video file to edit: ')
+    capture = cv2.VideoCapture(filename)
 
     # Check if camera opened successfully
     if (capture.isOpened() is False):
@@ -51,28 +54,62 @@ def classify_video_frames(model, gridsize=3, output_filename='output.avi', label
     return
 
 
+def load_and_resize_images_from_paths(filepaths):
+
+    images = []	
+    for imagepath in filepaths:
+        img = cv2.imread(imagepath)
+        if img.shape[0] != 224:
+            img = cv2.resize(img, (224,224))
+            img = np.array(img)
+        images.append(img)
+
+    return images
+
+
+def load_image_paths(globPath, target, test_data=False):
+
+    image_files = []
+    for filename in glob.glob(globPath):
+        image_files.append(filename)
+
+    filepaths = []
+    targets = []
+    for file in image_files:
+        filepaths.append(file)
+        targets.append(target)
+
+    # For testing 500 first loaded images
+    if test_data is True:
+        filepaths = filepaths[:500]
+        targets = targets[:500]
+
+    return filepaths, targets
+
+
 def main():
 
-    input_str = str(input('Test (y/n): '))
-    if input_str == "y":
-        test = True
-    else:
-        test = False
     input_str = str(input('Train or Load model (Train/Load): '))
 
     if input_str == "Train":
 
+        input_str = str(input('Test (y/n): '))
+        if input_str == "y":
+            test = True
+        elif input_str == "n":
+            test = False
+
         # Water images
         target = "water"
         path = 'water_images/*.jpg'
-        waterimagepaths, water_targets = classification_model.load_image_paths(path, target, test)
-        water_images = classification_model.load_and_resize_images_from_paths(waterimagepaths)
+        waterimagepaths, water_targets = load_image_paths(path, target, test)
+        water_images = load_and_resize_images_from_paths(waterimagepaths)
 
         # Other images
         target = "other"
         path = 'ResizedImages224x224/*.jpg'
-        other_images_paths, other_targets = classification_model.load_image_paths(path, target, test)
-        other_images = classification_model.load_and_resize_images_from_paths(other_images_paths)
+        other_images_paths, other_targets = load_image_paths(path, target, test)
+        other_images = load_and_resize_images_from_paths(other_images_paths)
 
         # Join the images
         images = water_images + other_images
@@ -114,7 +151,7 @@ def main():
                 if output_filename == '':
                     output_filename = 'output.avi'
 
-                gridsize = input('gridsize: ')
+                gridsize = input('input gridsize (x*x): ')
                 try:
                     gridsize = int(gridsize)
                 except ValueError:

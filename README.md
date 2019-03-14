@@ -23,14 +23,7 @@ In this project, the purpose was to study neural networks for water image classi
 
 # Usage
 
-- The purpose of the model and project is to test whether it is possible to classify real images of water based on training data which is acquired from simulation environment
-- The program is run using __main.py__
-
-- main.py
-  - 
-- image_editor.py
-- image_extractor.py
-- classification_model.py
-  - File is used to generate and train the classification model for image frames.
-  - The weights are saved as "weights.best.hdf5"
+- '__main.py__' is used to run the program
+- '__image_editor.py__' is used to edit each video frame accordingly
+- '__classification_model.py__' is used to generate and train the model to classify the images
 

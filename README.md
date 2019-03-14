@@ -24,6 +24,9 @@ In this project, the purpose was to study neural networks for water image classi
 # Usage
 
 - '__main.py__' is used to run the program
-- '__image_editor.py__' is used to edit each video frame accordingly
+  - At start, the program will ask to Train/Load a model
+    - For training, the previously extracted data will be used.
+    - The model will be trained using '__classification_model.py__'
+- '__image_editor.py__' is used to edit each video frame
 - '__classification_model.py__' is used to generate and train the model to classify the images
 

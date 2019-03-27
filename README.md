@@ -9,7 +9,7 @@ In this project, the purpose was to study neural networks for water classificati
 - Tensorflow backend is used to train the models. For installing tensorflow, please check https://www.tensorflow.org/install/pip
 - Additional packages are included in the requirements.txt file.
 
-# Model Training Data
+# Preparation and Data Preprocess
 
 - For training a model to classify simulator images of water and real images of different objects in maritime objects are used
 - Simulator images consist of HD and ground truth images in maritime environment

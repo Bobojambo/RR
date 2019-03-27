@@ -13,10 +13,14 @@ In this project, the purpose was to study neural networks for water classificati
 
 - For training a model to classify simulator images of water and real images of different objects in maritime objects are used
 - Simulator images consist of HD and ground truth images in maritime environment
-- Real images consist of HD images with
-- Before using the software, place the data correspondingly 
-  - 'data/simulator_images/'
-  - 'data/real_images/'
+- Real images consist of HD images and their annotations in their corresponding XML files.
+- Before using, place the data in their corresponding folders
+  - simulator images in 'data/simulator_images/images/'
+    - img_00000_GT
+    - img_00000_HD
+  - real images in 'data/real_images/' 
+    - annotations/image_0.xml
+    - images/image_0.jpg  
 - Run '__real_image_extractor.py__' and '__simulator_image_extractor.py__' to acquire the dataset used for training the model.
   - water class images will be generated using the simulator images into 'water_images/' folder
   - other class images will be generated using the real images into 'ResizedImages/' folders

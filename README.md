@@ -1,6 +1,6 @@
 # Mosaic water image classification project
 
-In this project, the purpose was to study neural networks for water image classification. This is carried out as binary classification case. The data for training consisted of 2 classes - water and other. The water images were created using a simulation environment. The other class images consist real-life images of different objects such as vessels and structures but they were treated as only 1 class. 
+In this project, the purpose was to study neural networks for water classification. This is carried out as binary classification case. The data for training consisted of 2 classes - water and other. The water images were created using a simulation environment. The other class images consist of real-life images of different objects such as vessels and structures but they were treated as the other class.
 
 # Requirements
 
@@ -14,12 +14,12 @@ In this project, the purpose was to study neural networks for water image classi
 - For training a model to classify simulator images of water and real images of different objects in maritime objects are used
 - Simulator images consist of HD and ground truth images in maritime environment
 - Real images consist of HD images with
-- Before training, place the data correspondingly 
+- Before using the software, place the data correspondingly 
   - 'data/simulator_images/'
   - 'data/real_images/'
 - Run '__real_image_extractor.py__' and '__simulator_image_extractor.py__' to acquire the dataset used for training the model.
-  - water class images will be extracted from the simulation images in 'water_images/' folder
-  - other class images will be extracted in different sizes to 'ResizedImages/' folders
+  - water class images will be generated using the simulator images into 'water_images/' folder
+  - other class images will be generated using the real images into 'ResizedImages/' folders
 
 # Usage
 
